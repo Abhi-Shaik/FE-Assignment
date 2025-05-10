@@ -9,7 +9,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -46,7 +46,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #ffffff;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -70,22 +70,14 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
   /* Thin and light scrollbar */
-.thin-scrollbar {
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #e3e3e3 transparent; /* Light gray thumb */
-}
 
-.thin-scrollbar::-webkit-scrollbar {
-  width: 1px;
+/* App.css */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
-
-.thin-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #d3d3d3; /* Light gray */
-  border-radius: 1px;
-}
-
-.thin-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
 }
 
 }

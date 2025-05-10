@@ -135,9 +135,14 @@ const CollapsibleSection = ({ title, sections, onSelectContent, defaultOpen = tr
 
 const SummaryPanel = ({ onSelectContent, isCollapsed }) => (
   <div
-    className={`transition-all duration-300 border-r border-gray-200 overflow-y-auto bg-gray-50 ${
+    className={`transition-all duration-300 border-r border-gray-200 overflow-y-auto bg-gray-50  ${
       isCollapsed ? 'w-14 flex items-center justify-center' : 'w-80 p-4'
     }`}
+     style={{
+    overflowY: 'scroll',
+    scrollbarWidth: 'none',
+    msOverflowStyle: 'none',
+  }}
   >
     {isCollapsed ? (
       <Menu size={20} className="text-gray-500" />
@@ -215,7 +220,12 @@ const MeetingContent = ({ selectedData, onSort }) => {
 
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <div className="p-6 h-full overflow-y-auto bg-gray-50">
+      <div className="p-6 h-full overflow-y-auto bg-gray-50 "
+       style={{
+    overflowY: 'scroll',
+    scrollbarWidth: 'none',
+    msOverflowStyle: 'none',
+  }}>
         <div className="flex items-center justify-between mb-2 text-xs text-gray-500">
           <div className="flex items-center">
             <Edit3 size={14} className="mr-1.5" />
@@ -282,7 +292,7 @@ export default function App() {
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
 
   return (
-    <div className="flex h-screen font-sans text-gray-900">
+    <div className="flex h-screen font-sans bg-white">
       <Sidebar isCollapsed={isLeftSidebarCollapsed} setIsCollapsed={setIsLeftSidebarCollapsed} />
       <MainContent 
         selectedData={selectedData}
