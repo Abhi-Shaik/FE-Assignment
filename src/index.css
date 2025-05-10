@@ -69,4 +69,23 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+  /* Thin and light scrollbar */
+.thin-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #e3e3e3 transparent; /* Light gray thumb */
+}
+
+.thin-scrollbar::-webkit-scrollbar {
+  width: 1px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d3d3d3; /* Light gray */
+  border-radius: 1px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 }
