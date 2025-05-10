@@ -184,17 +184,20 @@ const SortableFact = ({ fact, id }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-start p-3 bg-white shadow-sm mb-3 rounded-lg hover:bg-gray-200 hover:border-l hover:border-gray-300"
+      className="flex items-start p-3 bg-white shadow-sm mb-3 rounded-lg hover:bg-gray-200 hover:border-l hover:border-gray-300 group pl-0" // Added 'group' here
     >
+      {/* Draggable handle (six dots) - visible only on hover for each specific fact */}
       <span
         ref={setActivatorNodeRef}
         {...attributes}
         {...listeners}
-        className="mr-3 cursor-grab text-gray-400 hover:text-gray-600 mt-0.5 p-1"
+        className="cursor-grab text-gray-400 hover:text-gray-600 mt-0.5 p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         title="Drag to reorder"
       >
         <GripVertical size={18} />
       </span>
+
+      {/* Fact content */}
       <div className="flex-grow">
         <p className="text-sm text-gray-700 leading-relaxed border-l border-black pl-2">
           {fact.content}
@@ -203,6 +206,10 @@ const SortableFact = ({ fact, id }) => {
     </div>
   );
 };
+
+
+
+
 
 const MeetingContent = ({ selectedData, onSort }) => {
   const { title, facts } = selectedData || { title: "Meeting Summary", facts: [] };
@@ -220,12 +227,14 @@ const MeetingContent = ({ selectedData, onSort }) => {
 
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <div className="p-6 h-full overflow-y-auto bg-gray-50 "
-       style={{
-    overflowY: 'scroll',
-    scrollbarWidth: 'none',
-    msOverflowStyle: 'none',
-  }}>
+      <div
+        className="p-6 h-full overflow-y-auto bg-gray-50"
+        style={{
+          overflowY: 'scroll',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
+      >
         <div className="flex items-center justify-between mb-2 text-xs text-gray-500">
           <div className="flex items-center">
             <Edit3 size={14} className="mr-1.5" />
@@ -250,6 +259,7 @@ const MeetingContent = ({ selectedData, onSort }) => {
     </DndContext>
   );
 };
+
 
 const TranscriptPanel = ({ onToggleSummary }) => (
   <div className="relative bg-gray-50 transition-all duration-300 w-80 border-l border-gray-200 flex flex-col flex-shrink-0">
