@@ -1,6 +1,8 @@
 // Updated App code with dark mode removed
 
 import React, { useState } from 'react';
+import { format } from 'date-fns';
+
 import {
   Search, Home, FileText, Users, CheckSquare, UserCircle,
   HelpCircle, ChevronLeft, ChevronRight, ChevronDown, CalendarDays,
@@ -76,34 +78,60 @@ const MainHeader = () => (
   </div>
 );
 
-const MeetingDetailsHeader = () => (
-  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-6 border-b border-gray-200 flex-shrink-0">
-    <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-0">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-2 sm:mb-0 sm:mr-6">Onboarding Call with Smith & Marek</h2>
-      <div className="flex items-center space-x-3 text-sm text-gray-500">
-        <div className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded-md">
-          <CalendarDays size={16} />
-          <span>Today</span>
-        </div>
-        <div className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded-md">
-          <Users size={16} />
-          <span>Alex + 2 others</span>
-        </div>
-        <button className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded-md hover:bg-gray-200">
-          <span>Onboarding</span>
-          <ChevronRight size={16} />
-        </button>
-      </div>
-    </div>
-    <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-150 w-full sm:w-auto mt-4 sm:mt-0">
-      <span>Save document</span>
-      <ArrowRight size={16} />
-    </button>
-  </div>
-);
+const MeetingDetailsHeader = () => {
+  const today = format(new Date(), 'MMMM d, yyyy'); // Example: May 11, 2025
 
-const CollapsibleSection = ({ title, sections, onSelectContent, defaultOpen = true }) => {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-6 border-b border-gray-200 flex-shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-0">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-2 sm:mb-0 sm:mr-6">Onboarding Call with Smith & Marek</h2>
+        <div className="flex items-center space-x-3 text-sm text-gray-500">
+          {/* Tooltip wrapper for "Today" */}
+          <div className="relative group">
+            <div className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded-md cursor-default">
+              <CalendarDays size={16} />
+              <span>Today</span>
+            </div>
+            {/* Tooltip */}
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-500 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap">
+              {today}
+            </div>
+          </div>
+
+         <div className="relative group">
+          <div className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded-md">
+            <Users size={16} />
+            <span>Alex + 2 others</span>
+          </div>
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-500 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap">
+            Alex, Rohit, Edan
+          </div>
+        </div>
+
+          <button className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded-md hover:bg-gray-200">
+            <span>Onboarding</span>
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-150 w-full sm:w-auto mt-4 sm:mt-0">
+        <span>Save document</span>
+        <ArrowRight size={16} />
+      </button>
+    </div>
+  );
+};
+
+const CollapsibleSection = ({
+  title,
+  sections,
+  onSelectContent,
+  selectedSectionName,
+  defaultOpen = true
+}) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
+
   return (
     <div className="py-2">
       <button
@@ -118,31 +146,35 @@ const CollapsibleSection = ({ title, sections, onSelectContent, defaultOpen = tr
       </button>
       {isOpen && (
         <div className="mt-2 pl-3 border-l-2 border-gray-200">
-          {sections.map(section => (
-            <p
-              key={section.id}
-              className="text-xs text-gray-600 py-1.5 px-2 rounded-md cursor-pointer hover:bg-gray-100 hover:text-blue-600"
-              onClick={() => onSelectContent(section.unstructured_facts || [], section.name)}
-            >
-              {section.name}
-            </p>
-          ))}
+          {sections.map(section => {
+            const isSelected = section.name === selectedSectionName;
+            return (
+              <p
+                key={section.id}
+                className={`text-xs py-1.5 px-2 rounded-md cursor-pointer transition-all
+                  ${isSelected ? 'text-blue-600 font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-blue-600'}`}
+                onClick={() => onSelectContent(section.unstructured_facts || [], section.name)}
+              >
+                {section.name}
+              </p>
+            );
+          })}
         </div>
       )}
     </div>
   );
 };
 
-const SummaryPanel = ({ onSelectContent, isCollapsed }) => (
+const SummaryPanel = ({ onSelectContent, isCollapsed, selectedSectionName }) => (
   <div
-    className={`transition-all duration-300 border-r border-gray-200 overflow-y-auto bg-gray-50  ${
+    className={`transition-all duration-300 border-r border-gray-200 overflow-y-auto bg-gray-50 ${
       isCollapsed ? 'w-14 flex items-center justify-center' : 'w-80 p-4'
     }`}
-     style={{
-    overflowY: 'scroll',
-    scrollbarWidth: 'none',
-    msOverflowStyle: 'none',
-  }}
+    style={{
+      overflowY: 'scroll',
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
+    }}
   >
     {isCollapsed ? (
       <Menu size={20} className="text-gray-500" />
@@ -157,6 +189,7 @@ const SummaryPanel = ({ onSelectContent, isCollapsed }) => (
               sections={item.sections}
               onSelectContent={onSelectContent}
               defaultOpen={true}
+              selectedSectionName={selectedSectionName}
             />
           ))}
         </div>
@@ -164,6 +197,7 @@ const SummaryPanel = ({ onSelectContent, isCollapsed }) => (
     )}
   </div>
 );
+
 
 const SortableFact = ({ fact, id }) => {
   const {
@@ -275,12 +309,23 @@ const TranscriptPanel = ({ onToggleSummary }) => (
   </div>
 );
 
-const MainContent = ({ selectedData, onSelectContent, onSort, isSummaryCollapsed, setIsSummaryCollapsed }) => (
+const MainContent = ({
+  selectedData,
+  onSelectContent,
+  onSort,
+  isSummaryCollapsed,
+  setIsSummaryCollapsed,
+  selectedSectionName
+}) => (
   <div className="flex-1 flex flex-col bg-white overflow-hidden border-gray-200 border-l border-t rounded-tl-[15px] mt-6">
     <MainHeader />
     <MeetingDetailsHeader />
     <div className="flex-1 flex flex-row overflow-hidden">
-      <SummaryPanel onSelectContent={onSelectContent} isCollapsed={isSummaryCollapsed} />
+      <SummaryPanel
+        onSelectContent={onSelectContent}
+        isCollapsed={isSummaryCollapsed}
+        selectedSectionName={selectedSectionName}
+      />
       <div className="flex-1 min-w-0 flex flex-col bg-gray-50">
         <MeetingContent selectedData={selectedData} onSort={onSort} />
       </div>
@@ -289,27 +334,35 @@ const MainContent = ({ selectedData, onSelectContent, onSort, isSummaryCollapsed
   </div>
 );
 
+
 export default function App() {
-  const [selectedData, setSelectedData] = useState(() => {
-    const firstSectionGroup = mockData.sections[0];
-    const firstSubSection = firstSectionGroup?.sections[0];
-    return {
-      title: firstSubSection?.name ?? 'Meeting Summary',
-      facts: firstSubSection?.unstructured_facts ?? []
-    };
+  const firstSectionGroup = mockData.sections[0];
+  const firstSubSection = firstSectionGroup?.sections[0];
+
+  const [selectedData, setSelectedData] = useState({
+    title: firstSubSection?.name ?? 'Meeting Summary',
+    facts: firstSubSection?.unstructured_facts ?? []
   });
+
+  const [selectedSectionName, setSelectedSectionName] = useState(firstSubSection?.name ?? '');
   const [isLeftSidebarCollapsed, setIsLeftSidebarCollapsed] = useState(false);
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
+
+  const handleSelectContent = (facts, title) => {
+    setSelectedData({ title, facts });
+    setSelectedSectionName(title);
+  };
 
   return (
     <div className="flex h-screen font-sans bg-white">
       <Sidebar isCollapsed={isLeftSidebarCollapsed} setIsCollapsed={setIsLeftSidebarCollapsed} />
-      <MainContent 
+      <MainContent
         selectedData={selectedData}
-        onSelectContent={(facts, title) => setSelectedData({ title, facts })}
+        onSelectContent={handleSelectContent}
         onSort={(newFacts) => setSelectedData(prev => ({ ...prev, facts: newFacts }))}
         isSummaryCollapsed={isSummaryCollapsed}
         setIsSummaryCollapsed={setIsSummaryCollapsed}
+        selectedSectionName={selectedSectionName}
       />
     </div>
   );
